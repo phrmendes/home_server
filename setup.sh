@@ -4,6 +4,7 @@
 USERNAME=phrmendes
 APT_PACKAGES=(python3-pip vim podman uidmap slirp4netns)
 PYTHON_PACKAGES=(podman-compose)
+CWD=$(pwd)
 
 # update system
 apt update && apt upgrade -y
@@ -35,4 +36,4 @@ source "$HOME/.zshrc"
 sudo sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
 
 # podman-compose in home directory
-ls -s ./podman-compose "$HOME/podman-compose.yml"
+ls -s "$CWD/podman-compose" "$HOME/podman-compose.yml"
