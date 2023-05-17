@@ -33,3 +33,6 @@ source "$HOME/.zshrc"
 
 # remove ssh root login
 sudo sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
+
+# podman-compose in home directory
+ls -s ./podman-compose "$HOME/podman-compose.yml"
