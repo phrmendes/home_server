@@ -1,0 +1,27 @@
+services:
+  nginxproxy:
+    image: "jc21/nginx-proxy-manager:latest"
+    container_name: nginxproxy
+    restart: unless-stopped
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=America/Sao_Paulo
+    ports:
+      - "80:80"
+      - "81:81"
+      - "443:443"
+    volumes:
+      - ./nginx/data:/data
+      - ./nginx/letsencrypt:/etc/letsencrypt
+  yacht:
+    image: "selfhostedpro/yacht"
+    container_name: yacht
+    restart: unless-stopped
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=America/Sao_Paulo
+    volumes:
+      - ./yacht:/config
+      - /var/run/podman/podman.sock:/var/run/docker.sock
