@@ -1,6 +1,6 @@
 services:
   nginxproxy:
-    image: "jc21/nginx-proxy-manager:latest"
+    image: "docker.io/jc21/nginx-proxy-manager:latest"
     container_name: nginxproxy
     restart: unless-stopped
     environment:
@@ -15,7 +15,7 @@ services:
       - ./nginx/data:/data
       - ./nginx/letsencrypt:/etc/letsencrypt
   yacht:
-    image: "selfhostedpro/yacht"
+    image: "docker.io/selfhostedpro/yacht"
     container_name: yacht
     restart: unless-stopped
     environment:
