@@ -13,8 +13,8 @@ services:
       - "81:81"
       - "443:443"
     volumes:
-      - ./nginx/data:/data
-      - ./nginx/letsencrypt:/etc/letsencrypt
+      - "~/nginx/data:/data"
+      - "~/nginx/letsencrypt:/etc/letsencrypt"
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
@@ -23,9 +23,9 @@ services:
       - PGID=1001
       - TZ=America/Sao_Paulo
     volumes:
-      - /home/phrmendes/jellyfin:/config
-      - /home/phrmendes/jellyfin/tvshows:/data/tvshows
-      - /home/phrmendes/jellyfin/movies:/data/movies
+      - "~/jellyfin:/config"
+      - "~/jellyfin/tvshows:/data/tvshows"
+      - "~/jellyfin/movies:/data/movies"
     restart: unless-stopped
   deluge:
     image: lscr.io/linuxserver/deluge:latest
@@ -36,9 +36,9 @@ services:
       - TZ=Etc/UTC
       - DELUGE_LOGLEVEL=error
     volumes:
-      - /home/phrmendes/deluge:/config
-      - /home/phrmendes/jellyfin/movies:/movies
-      - /home/phrmendes/jellyfin/tvshows:/tvshows
+      - "~/deluge:/config"
+      - "~/jellyfin/movies:/movies"
+      - "~/jellyfin/tvshows:/tvshows"
     restart: unless-stopped
   pihole:
     container_name: pihole
@@ -47,12 +47,21 @@ services:
       - PUID=1001
       - PGID=1001
       - TZ=America/Sao_Paulo
+      - WEBPASSWORD=password
+      - PIHOLE_DNS_=1.1.1.1;9.9.9.9
+      - DNSSEC=false
+      - VIRTUAL_HOST=pihole.phrmendes.duckdns.org
+      - WEBTHEME=default-dark
+      - PIHOLE_DOMAIN=lan
     ports:
       - "54:53/tcp"
       - "54:53/udp"
-      - "67:67/udp"
-      - "8080:80/tcp"
+    dns:
+      - 127.0.0.1
+      - 1.1.1.1
     volumes:
-      - ./etc-pihole:/etc/pihole
-      - ./etc-dnsmasq.d:/etc/dnsmasq.d
+      - "~/etc-pihole:/etc/pihole"
+      - "~/etc-dnsmasq.d:/etc/dnsmasq.d"
     restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
