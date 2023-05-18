@@ -40,7 +40,6 @@ services:
       - /home/phrmendes/jellyfin/movies:/movies
       - /home/phrmendes/jellyfin/tvshows:/tvshows
     restart: unless-stopped
-    version: "3"
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
