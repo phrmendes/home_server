@@ -1,10 +1,11 @@
 #! /usr/bin/env bash
 
 # variables
+APT_PACKAGES=(python3-pip vim podman docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin)
+ARCHITECTURE=$(dpkg --print-architecture)
+REQUIREMENTS=(apt-transport-https ca-certificates curl gnupg2 software-properties-common)
+UBUNTU_VERSION=$(. /etc/os-release && echo $VERSION_CODENAME)
 USERNAME=phrmendes
-APT_PACKAGES=(python3-pip vim podman uidmap slirp4netns)
-PYTHON_PACKAGES=(podman-compose)
-CWD=$(pwd)
 
 # update system
 apt update && apt upgrade -y
@@ -16,17 +17,24 @@ passwd $USERNAME
 usermod -aG sudo $USERNAME
 usermod --shell /bin/zsh $USERNAME
 
-# install dependencies
-apt install -y "${APT_PACKAGES[@]}"
-
 # change user
 su - $USERNAME
 
+# install requirements
+sudo apt install -y "${REQUIREMENTS[@]}"
+
+# install docker
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$ARCHITECTURE signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $UBUNTU_VERSION stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+sudo usermod -aG docker "$USERNAME"
+
+# install dependencies
+sudo apt install -y "${APT_PACKAGES[@]}"
+
 # zsh theme
 omz theme set robbyrussell
-
-# install podman-compose
-pip3 install "${PYTHON_PACKAGES[@]}"
 
 # add local bin to path
 echo "export PATH=$PATH:$HOME/.local/bin" >>"$HOME/.zshrc"
@@ -34,6 +42,3 @@ source "$HOME/.zshrc"
 
 # remove ssh root login
 sudo sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
-
-# podman-compose in home directory
-ls -s "$CWD/podman-compose" "$HOME/podman-compose.yml"
