@@ -27,18 +27,27 @@ services:
       - "~/jellyfin/tvshows:/data/tvshows"
       - "~/jellyfin/movies:/data/movies"
     restart: unless-stopped
-  deluge:
-    image: lscr.io/linuxserver/deluge:latest
-    container_name: deluge
+  transmission-openvpn:
+    container_name: transmission
+    image: haugene/transmission-openvpn
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - "~/transmission/data:/data"
+      - "~/transmission/config:/config"
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
-      - DELUGE_LOGLEVEL=error
-    volumes:
-      - "~/deluge:/config"
-      - "~/jellyfin/movies:/movies"
-      - "~/jellyfin/tvshows:/tvshows"
+      - TZ=America/Sao_Paulo
+      - OPENVPN_PROVIDER=PIA
+      - OPENVPN_CONFIG=france
+      - OPENVPN_USERNAME=user
+      - OPENVPN_PASSWORD=pass
+      - LOCAL_NETWORK=192.168.0.0/16
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
     restart: unless-stopped
   pihole:
     container_name: pihole
