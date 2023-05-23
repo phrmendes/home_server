@@ -33,12 +33,11 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=America/Sao_Paulo
       - DELUGE_LOGLEVEL=error
     volumes:
       - "~/deluge:/config"
       - "~/jellyfin/movies:/movies"
-      - "~/jellyfin/tvshows:/tvshows"
     restart: unless-stopped
   pihole:
     container_name: pihole
